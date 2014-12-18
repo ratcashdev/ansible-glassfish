@@ -1,0 +1,76 @@
+---
+# defaults file for glassfish
+
+# glassfish version from the {{ glassfish_list }} keys
+gf_version: 4.1.144
+
+# let this point to the official GF distribution from oracle
+# or to the commercially supported PAYARA.co.uk download link
+# for Oracle's Glassfish, use
+# http://dlc.sun.com.edgesuite.net/glassfish/4.1/release/glassfish-4.1.zip
+# for the Payara SNAPSHOTs (http://www.payara.co/upstream_builds), use
+# http://payara.co.s3-website-eu-west-1.amazonaws.com/payara.zip
+# for Payara STABLE, use
+# https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara.zip
+gf_download_url: http://payara.co.s3-website-eu-west-1.amazonaws.com/payara.zip
+
+# this is the name of the first directory inside the zip
+# either glassfish or payara41, depending on the distribution
+main_dir_name: payara41
+
+# where to unpack the glassfish zip
+install_dir: /opt/
+
+# where to download the glassfish zip
+download_dir: /tmp
+
+# location where is the glassfish_{{ gf_version }}.tar.gz located
+download_prefix: ansible-glassfish
+
+appserver_account: appserver01
+
+
+# list of extra libs to be included in the instalation
+# e.g. postgres jdbc driver, mysql driver, eclipselink noSQL, etc.
+glassfish_extra_libs:
+  - name: MySQL JDBC Driver
+    file: mysql-connector-java-5.1.34.jar
+    src: http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.34/mysql-connector-java-5.1.34.jar
+    dest: lib/mysql-connector-java-5.1.34.jar
+    state: disabled
+  - name: Postgres JDBC Driver
+    src: http://jdbc.postgresql.org/download/postgresql-9.3-1102.jdbc41.jar
+    file: postgresql-9.3-1102.jdbc41.jar
+    dest: lib/postgresql-9.3-1102.jdbc41.jar
+    state: disabled
+  - name: MongoDB JDBC Driver
+    src: http://central.maven.org/maven2/org/mongodb/mongo-java-driver/2.12.4/mongo-java-driver-2.12.4.jar
+    file: mongo-java-driver-2.12.4.jar
+    dest: modules/mongo-java-driver-2.12.4.jar
+    state: disabled
+  - name: EclipseLink NoSQL module
+    src: http://central.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.nosql/2.5.2/org.eclipse.persistence.nosql-2.5.2.jar
+    file: org.eclipse.persistence.nosql-2.5.2.jar
+    dest: modules/org.eclipse.persistence.nosql-2.5.2.jar
+    state: disabled
+
+# default directory for configuration files / scripts / templates
+glassfish_templates_dir: .
+
+additional_JVM_options: 
+  std: >
+    <jvm-options>-XX:+UseConcMarkSweepGC</jvm-options>
+    <jvm-options>-XX:+UseParNewGC</jvm-options>
+    <jvm-options>-Xmx512m</jvm-options>
+    <jvm-options>-Dsun.net.inetaddr.ttl=30</jvm-options>
+
+  # optimized for 8GB RAM systems with JDK8
+  8gb: >
+    <jvm-options>-XX:SurvivorRatio=5</jvm-options>
+    <jvm-options>-Xms6g</jvm-options>
+    <jvm-options>-Xmx6g</jvm-options>
+    <jvm-options>-XX:MaxNewSize=1500m</jvm-options>
+    <jvm-options>-Dsun.net.inetaddr.ttl=30</jvm-options>
+
+# set this on a per host or group level to select a configuration from additional_JVM_options 
+jvm_set: std

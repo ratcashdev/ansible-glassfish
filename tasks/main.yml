@@ -1,0 +1,9 @@
+---
+# tasks file for java
+
+- include: setup-common.yml
+
+# Debian(setup)  specific tasks
+- include: setup-Debian.yml
+  when: "ansible_os_family == 'Debian'"
+

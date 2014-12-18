@@ -1,0 +1,82 @@
+---
+- name: "create install directory"
+  action: file path={{ install_dir }} state=directory
+  tags:
+    - glassfish
+    - install
+
+- name: "prepare download directory"
+  action: file path={{ download_dir }}/{{ download_prefix }}/libs state=directory
+  tags:
+    - glassfish
+    - install
+
+- name: group creation
+  action: group 
+    name="{{ appserver_account }}"
+  tags:
+    - glassfish
+    - install
+    - users
+
+- name: user creation
+  action: 
+    user
+    name={{ appserver_account }}
+    group={{ appserver_account }}
+    shell="/sbin/false"
+    comment="system account for the application server"
+    createhome=yes
+    home=/home/{{ appserver_account }}
+    system=yes
+  tags: 
+    - glassfish
+    - install
+    - users
+
+
+- name: "download distribution"
+  action: get_url url={{ gf_download_url }} dest={{ download_dir }}/{{ download_prefix }}/gf.zip force=yes
+  tags:
+    - glassfish
+    - install
+
+- name: "unpack glassfish"
+  action: shell creates={{ install_dir }}/glassfish unzip -o {{ download_dir }}/{{ download_prefix }}/gf.zip -d {{ install_dir }}
+  tags:
+    - glassfish
+    - install
+
+- name: "copy configuration"
+  action: template src={{ glassfish_templates_dir }}/config/domain.xml dest={{ install_dir }}/{{ main_dir_name }}/glassfish/domains/domain1/config/domain.xml owner={{ appserver_account }} group={{ appserver_account }} mode=0640
+  tags: 
+    - glassfish
+    - config
+
+- name: "download extra libs"
+  action: get_url url={{ item.src }} dest={{ download_dir }}/{{ download_prefix }}/libs/{{ item.file }} force=yes
+  tags:
+    - glassfish
+    - install
+  with_items: glassfish_extra_libs 
+  when: "item.state == 'enabled'"
+
+- name: "copy extra libs"
+  action: shell cp {{ download_dir }}/{{ download_prefix }}/libs/{{ item.file }} {{ install_dir }}/{{ main_dir_name }}/glassfish/{{ item.dest }}
+  tags: 
+    - glassfish
+    - install
+  with_items: glassfish_extra_libs 
+  when: "item.state == 'enabled'"
+
+- name: "apply access rights"
+  action: file path={{ install_dir }}/{{ main_dir_name }} owner={{ appserver_account }} group={{ appserver_account }} mode="u+rwX,g-wX,o-rwx" state=directory recurse=yes
+  tags:
+    - glassfish
+    - install
+
+- name: "remove install files"
+  action: file path={{ download_dir }}/{{ download_prefix }} state=absent
+  tags:
+    - glassfish
+    - install

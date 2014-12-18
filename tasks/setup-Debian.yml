@@ -1,0 +1,12 @@
+---
+- name: "copy init script"
+  action: template src={{ glassfish_templates_dir }}/etc/init.d/glassfish dest=/etc/init.d/glassfish owner=root group=root mode=0754
+  tags: 
+    - glassfish
+    - install
+
+- name: "update defaults"
+  action: shell  update-rc.d glassfish defaults
+  tags: 
+    - glassfish
+    - install
