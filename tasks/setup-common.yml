@@ -47,8 +47,11 @@
     - glassfish
     - install
 
-- name: "copy configuration"
-  action: template src={{ glassfish_templates_dir }}/config/domain.xml dest={{ install_dir }}/{{ main_dir_name }}/glassfish/domains/domain1/config/domain.xml owner={{ appserver_account }} group={{ appserver_account }} mode=0640
+
+- name: "copy config files"
+  action: template src={{ glassfish_templates_dir }}/{{ item.name }} dest={{ install_dir }}/{{ main_dir_name }}/glassfish/domains/domain1/{{ item.name }} owner={{ item.owner }} group={{ item.group }} mode={{ item.mode }}
+  with_items: glassfish_config_files
+  when: item.state == 'enabled'
   tags: 
     - glassfish
     - config
@@ -59,7 +62,7 @@
     - glassfish
     - install
   with_items: glassfish_extra_libs 
-  when: "item.state == 'enabled'"
+  when: item.state == 'enabled'
 
 - name: "copy extra libs"
   action: shell cp {{ download_dir }}/{{ download_prefix }}/libs/{{ item.file }} {{ install_dir }}/{{ main_dir_name }}/glassfish/{{ item.dest }}
@@ -67,7 +70,7 @@
     - glassfish
     - install
   with_items: glassfish_extra_libs 
-  when: "item.state == 'enabled'"
+  when: item.state == 'enabled'
 
 - name: "apply access rights"
   action: file path={{ install_dir }}/{{ main_dir_name }} owner={{ appserver_account }} group={{ appserver_account }} mode="u+rwX,g-wX,o-rwx" state=directory recurse=yes

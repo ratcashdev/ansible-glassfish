@@ -2,7 +2,7 @@
 # defaults file for glassfish
 
 # glassfish version from the {{ glassfish_list }} keys
-gf_version: 4.1.144
+gf_version: 4.1.152
 
 # let this point to the official GF distribution from oracle
 # or to the commercially supported PAYARA.co.uk download link
@@ -29,6 +29,11 @@ download_dir: /tmp
 download_prefix: ansible-glassfish
 
 appserver_account: appserver01
+
+glassfish_config_files:
+    - { name: "config/domain.xml", owner: "{{ appserver_account }}", group: "{{ appserver_account }}", mode: "0640", state: "enabled" }
+    - { name: "config/jmxremote.access", owner: "{{ appserver_account }}", group: "{{ appserver_account }}", mode: "0640", state: "disabled" }
+    - { name: "config/jmxremote.password", owner: "{{ appserver_account }}", group: "{{ appserver_account }}", mode: "0600",  state: "disabled" }
 
 
 # list of extra libs to be included in the instalation
@@ -58,12 +63,22 @@ glassfish_extra_libs:
 # default directory for configuration files / scripts / templates
 glassfish_templates_dir: .
 
+jmx_config: >
+    <jvm-options>-Dcom.sun.management.jmxremote.password.file=${com.sun.aas.instanceRoot}/config/jmxremote.password</jvm-options>
+    <jvm-options>-Dcom.sun.management.jmxremote.access.file=${com.sun.aas.instanceRoot}/config/jmxremote.access</jvm-options>
+    <jvm-options>-Dcom.sun.management.jmxremote.ssl=false</jvm-options>
+    <jvm-options>-Dcom.sun.management.jmxremote.port=9010</jvm-options>
+    <jvm-options>-Dcom.sun.management.jmxremote.authenticate=true</jvm-options>
+
 additional_JVM_options: 
   std: >
     <jvm-options>-XX:+UseConcMarkSweepGC</jvm-options>
     <jvm-options>-XX:+UseParNewGC</jvm-options>
     <jvm-options>-Xmx512m</jvm-options>
     <jvm-options>-Dsun.net.inetaddr.ttl=30</jvm-options>
+#    {{ jmx_config }} 
+
+
 
   # optimized for 8GB RAM systems with JDK8
   8gb: >
@@ -72,6 +87,8 @@ additional_JVM_options:
     <jvm-options>-Xmx6g</jvm-options>
     <jvm-options>-XX:MaxNewSize=1500m</jvm-options>
     <jvm-options>-Dsun.net.inetaddr.ttl=30</jvm-options>
+#    {{ jmx_config }}
 
 # set this on a per host or group level to select a configuration from additional_JVM_options 
 jvm_set: std
+
