@@ -9,10 +9,11 @@ gf_version: 4.1.144
 # for Oracle's Glassfish, use
 # http://dlc.sun.com.edgesuite.net/glassfish/4.1/release/glassfish-4.1.zip
 # for the Payara SNAPSHOTs (http://www.payara.co/upstream_builds), use
-# http://payara.co.s3-website-eu-west-1.amazonaws.com/payara.zip
+# http://payara.co.s3-website-eu-west-1.amazonaws.com/payara-prerelease.zip
 # for Payara STABLE, use
-# https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara.zip
-gf_download_url: http://payara.co.s3-website-eu-west-1.amazonaws.com/payara.zip
+# http://bit.ly/1bGAaLi
+# direct link: https://s3-eu-west-1.amazonaws.com/payara.co/Payara+Downloads/payara-4.1.152.zip
+gf_download_url: http://bit.ly/1bGAaLi
 
 # this is the name of the first directory inside the zip
 # either glassfish or payara41, depending on the distribution
