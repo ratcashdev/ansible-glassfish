@@ -92,3 +92,8 @@ additional_JVM_options:
 # set this on a per host or group level to select a configuration from additional_JVM_options 
 jvm_set: std
 
+# override these to distinguish between the configurations applied via the config_instance.{{df_env_instance}}.sh scripts. 
+# see the templates/config directory for a sample. The first argument is always the directory where asadmin resides.
+# the second argument to the script is the gf_env_instance_node variable
+gf_env_instance: default
+gf_env_instance_node: default

@@ -83,3 +83,9 @@
   tags:
     - glassfish
     - install
+
+- name: "start and configure instance"
+  action: script {{ glassfish_templates_dir }}/config/config_instance.{{ gf_env_instance }}.sh {{ install_dir }}/{{ main_dir_name }}/bin/ {{ gf_env_instance_node }}
+  tags: 
+    - glassfish
+    - install
