@@ -63,11 +63,13 @@ glassfish_extra_libs:
 # default directory for configuration files / scripts / templates
 glassfish_templates_dir: .
 
+# Setting both the jxmremote.port and jmxremote.rmi.port to the same value helps avoid problems with firewalls
 jmx_config: >
     <jvm-options>-Dcom.sun.management.jmxremote.password.file=${com.sun.aas.instanceRoot}/config/jmxremote.password</jvm-options>
     <jvm-options>-Dcom.sun.management.jmxremote.access.file=${com.sun.aas.instanceRoot}/config/jmxremote.access</jvm-options>
     <jvm-options>-Dcom.sun.management.jmxremote.ssl=false</jvm-options>
     <jvm-options>-Dcom.sun.management.jmxremote.port=9010</jvm-options>
+    <jvm-options>-Dcom.sun.management.jmxremote.rmi.port=9010</jvm-options>
     <jvm-options>-Dcom.sun.management.jmxremote.authenticate=true</jvm-options>
 
 additional_JVM_options: 
